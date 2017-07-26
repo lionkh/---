@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"></div>
+    <script>
+      window.onload = function() {
+ 
+ //Создаем сам фон и его функции
+ var canvas = document.getElementById("flying-bubbles");
+ var ctx = canvas.getContext("2d");
+ 
+ //Установим размеры фона равны размеру окна
+ var W = window.innerWidth, H = window.innerHeight;
+ canvas.width = W;
+ canvas.height = H;
+ 
+ //Создаем массив кругов
+ var circles = [];
+ for(var i = 0; i < 20; i++ ){
+ circles.push(new create_circle());
+ }
+ 
+ //Функции для создания кругов с различными положениями и скоростями
+ function create_circle() {
+ //Случайная позиция
+ this.x = Math.random()*W;
+ this.y = Math.random()*H;
+ 
+ //Случайная скорость
+ this.vx = 0.1+Math.random()*1;
+ this.vy = -this.vx;
+ 
+ //Случайный радиус
+ this.r = 10 + Math.random()*50;
+ }
+ 
+ //Функции для прорисовки фона
+ function draw() {
+ //Create the gradient
+ var grad = ctx.createLinearGradient(0, 0, W, H);
+ grad.addColorStop(0, 'rgb(19, 105, 168)');
+ grad.addColorStop(1, 'rgb(0, 0, 0)');
+ 
+ //Заполняем фон градиентом
+ ctx.globalCompositeOperation = "source-over";
+ ctx.fillStyle = grad;
+ ctx.fillRect(0,0,W,H);
+ 
+//Заполняем фон кругами
+ for(var j = 0; j < circles.length; j++) {
+ var c = circles[j];
+ 
+ //Рисуем круги и размытие
+ ctx.beginPath();
+ ctx.globalCompositeOperation = "lighter";
+ ctx.fillStyle = grad;
+ ctx.arc(c.x, c.y, c.r, Math.PI*2, false);
+ ctx.fill();
+ 
+ //Используем скорость
+ c.x += c.vx;
+ c.y += c.vy;
+ 
+ //Для предотвращения перемещения кругов за рамки
+ if(c.x < -50) c.x = W+50;
+ if(c.y < -50) c.y = H+50;
+ if(c.x > W+50) c.x = -50;
+ if(c.y > H+50) c.y = -50;
+ }
+ }
+ 
+ setInterval(draw, 25);
+ 
+}
+    </script>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
